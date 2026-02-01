@@ -1,0 +1,37 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for ./ansible-role-xfce4/
+
+# XFCE4 core and related packages (installed on all hosts)
+xfce4_packages:
+  - xfce4
+  - xfce4-goodies
+  - xfce4-panel-profiles
+  - gnome-keyring
+  - seahorse
+  - libsecret
+  - xdg-desktop-portal
+  - xdg-desktop-portal-gtk
+  - xdg-desktop-portal-xapp
+  - xdg-desktop-portal-cosmic
+  - libportal
+  - libportal-gtk4
+  - libportal-qt6
+  - bibata-cursor-theme-bin
+  - flat-remix
+  - kora-icon-theme
+  - xorg-server
+  - xorg-apps
+  - xdotool
+
+# LightDM packages (installed only on specific hosts)
+xfce4_lightdm_packages:
+  - lightdm
+  - lightdm-gtk-greeter
+  - lightdm-gtk-greeter-settings
+
+# Hostname that requires LightDM
+xfce4_lightdm_hostname: "ASTER"
+
+# LightDM service name
+xfce4_lightdm_service: lightdm
