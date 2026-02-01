@@ -42,6 +42,109 @@
     - service
 
 # =============================================================================
+# User Configuration
+# =============================================================================
+
+- name: Get user info for home directories
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ item.name }}"
+  loop: "{{ users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: user_info
+  tags:
+    - xfce4
+    - config
+
+- name: Create xdg-desktop-portal config directory for each user
+  ansible.builtin.file:
+    path: "{{ item.ansible_facts.getent_passwd[item.item.name][4] }}/.config/xdg-desktop-portal"
+    state: directory
+    owner: "{{ item.item.name }}"
+    group: "{{ item.item.group | default(default_group) }}"
+    mode: '0755'
+  loop: "{{ user_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  tags:
+    - xfce4
+    - config
+
+- name: Create themes directory for each user
+  ansible.builtin.file:
+    path: "{{ item.ansible_facts.getent_passwd[item.item.name][4] }}/.themes"
+    state: directory
+    owner: "{{ item.item.name }}"
+    group: "{{ item.item.group | default(default_group) }}"
+    mode: '0755'
+  loop: "{{ user_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  tags:
+    - xfce4
+    - config
+    - themes
+
+- name: Extract minimal-grey2 theme for each user
+  ansible.builtin.unarchive:
+    src: 98942-minimal-grey2.tar
+    dest: "{{ item.ansible_facts.getent_passwd[item.item.name][4] }}/.themes"
+    owner: "{{ item.item.name }}"
+    group: "{{ item.item.group | default(default_group) }}"
+    creates: "{{ item.ansible_facts.getent_passwd[item.item.name][4] }}/.themes/Minimal-Grey2"
+  loop: "{{ user_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  tags:
+    - xfce4
+    - config
+    - themes
+
+- name: Copy xfce-portals.conf for each user
+  ansible.builtin.copy:
+    src: xfce-portals.conf
+    dest: "{{ item.ansible_facts.getent_passwd[item.item.name][4] }}/.config/xdg-desktop-portal/xfce-portals.conf"
+    owner: "{{ item.item.name }}"
+    group: "{{ item.item.group | default(default_group) }}"
+    mode: '0644'
+  loop: "{{ user_info.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  tags:
+    - xfce4
+    - config
+    - portals
+
+# =============================================================================
+# System Configuration
+# =============================================================================
+
+- name: Copy gnome-keyring.portal to system portals directory
+  ansible.builtin.copy:
+    src: gnome-keyring.portal
+    dest: /usr/share/xdg-desktop-portal/portals/gnome-keyring.portal
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - xfce4
+    - config
+    - portals
+
+- name: Copy ACPI handler script
+  ansible.builtin.copy:
+    src: handler.sh
+    dest: /etc/acpi/handler.sh
+    owner: root
+    group: root
+    mode: '0755'
+  tags:
+    - xfce4
+    - config
+    - acpi
+
+# =============================================================================
 # Verification - All Hosts
 # =============================================================================
 
