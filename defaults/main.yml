@@ -23,6 +23,9 @@ xfce4_packages:
   - xorg-server
   - xorg-apps
   - xdotool
+  # Bluetooth support (required for bootstrap role bluetooth config)
+  - bluez
+  - bluez-utils
 
 # LightDM packages (installed only on specific hosts)
 xfce4_lightdm_packages:

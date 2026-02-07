@@ -16,6 +16,20 @@
     - packages
 
 # =============================================================================
+# Bluetooth Service - All Hosts
+# =============================================================================
+
+- name: Enable bluetooth service
+  ansible.builtin.systemd:
+    name: bluetooth
+    enabled: true
+    state: started
+  tags:
+    - xfce4
+    - bluetooth
+    - service
+
+# =============================================================================
 # LightDM Installation - ASTER Only
 # =============================================================================
 
