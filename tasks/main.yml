@@ -6,10 +6,21 @@
 # Package Installation - All Hosts
 # =============================================================================
 
+- name: Install XFCE4 package groups
+  community.general.pacman:
+    name: "{{ xfce4_groups }}"
+    state: present
+    extra_args: '--noconfirm --needed'
+  register: xfce4_groups_install_result
+  tags:
+    - xfce4
+    - packages
+
 - name: Install XFCE4 packages
   community.general.pacman:
     name: "{{ xfce4_packages }}"
     state: present
+    extra_args: '--noconfirm --needed'
   register: xfce4_install_result
   tags:
     - xfce4
@@ -37,6 +48,7 @@
   community.general.pacman:
     name: "{{ xfce4_lightdm_packages }}"
     state: present
+    extra_args: '--noconfirm --needed'
   register: lightdm_install_result
   when: hostname == xfce4_lightdm_hostname
   tags:
@@ -162,6 +174,17 @@
 # Verification - All Hosts
 # =============================================================================
 
+- name: Verify XFCE4 package groups are installed
+  ansible.builtin.command:
+    cmd: "pacman -Qg {{ item }}"
+  loop: "{{ xfce4_groups }}"
+  register: xfce4_group_verify
+  changed_when: false
+  failed_when: xfce4_group_verify.rc != 0
+  tags:
+    - xfce4
+    - verify
+
 - name: Verify XFCE4 packages are installed
   ansible.builtin.command:
     cmd: "pacman -Q {{ item }}"
@@ -175,7 +198,9 @@
 
 - name: Display XFCE4 installation result
   ansible.builtin.debug:
-    msg: "XFCE4 packages installed successfully: {{ xfce4_install_result is success }}"
+    msg: >-
+      XFCE4 groups installed: {{ xfce4_groups_install_result is success }},
+      XFCE4 packages installed: {{ xfce4_install_result is success }}
   tags:
     - xfce4
     - verify
