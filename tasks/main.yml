@@ -51,7 +51,7 @@
   ansible.builtin.systemd:
     name: bluetooth
     enabled: true
-    state: started
+    state: stopped
   tags:
     - xfce4
     - bluetooth
