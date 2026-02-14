@@ -27,6 +27,9 @@ xfce4_packages:
   - xorg-server
   - xdotool
   - file-roller
+  - thunar-volman
+  - gvfs
+  - gvfs-afc
   # Bluetooth support (required for bootstrap role bluetooth config)
   - bluez
   - bluez-utils
@@ -47,4 +50,4 @@ xfce4_lightdm_packages:
 xfce4_lightdm_hostname: "ASTER"
 
 # LightDM service name
-xfce4_lightdm_service: lightdm
+xfce4_lightdm_service: lightdm, bluetooth
