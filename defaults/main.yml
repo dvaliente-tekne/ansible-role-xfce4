@@ -26,9 +26,16 @@ xfce4_packages:
   - kora-icon-theme
   - xorg-server
   - xdotool
+  - file-roller
   # Bluetooth support (required for bootstrap role bluetooth config)
   - bluez
   - bluez-utils
+  - blueman
+  # Software needed at first boot.
+  - microsoft-edge-stable-bin
+  - ocs-url
+  - bitwarden-bin
+  - yubico-authenticator-bin
 
 # LightDM packages (installed only on specific hosts)
 xfce4_lightdm_packages:
