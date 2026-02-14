@@ -3,6 +3,26 @@
 # tasks file for ./ansible-role-xfce4/
 
 # =============================================================================
+# Hostname from /etc/hostname
+# =============================================================================
+
+- name: Read hostname from /etc/hostname
+  ansible.builtin.slurp:
+    src: /etc/hostname
+  register: hostname_file
+  ignore_errors: true
+  tags:
+    - xfce4
+    - lightdm
+
+- name: Set hostname fact from /etc/hostname
+  ansible.builtin.set_fact:
+    hostname_from_etc: "{{ (hostname_file.content | b64decode | trim) if hostname_file is succeeded else '' }}"
+  tags:
+    - xfce4
+    - lightdm
+
+# =============================================================================
 # Network Connectivity Check
 # =============================================================================
 
@@ -53,7 +73,7 @@
     state: present
     extra_args: '--noconfirm --needed'
   register: lightdm_install_result
-  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
+  when: (hostname_from_etc | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -64,7 +84,7 @@
     name: "{{ xfce4_lightdm_service }}"
     enabled: true
     state: stopped
-  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
+  when: (hostname_from_etc | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -219,7 +239,7 @@
   register: lightdm_package_verify
   changed_when: false
   failed_when: lightdm_package_verify.rc != 0
-  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
+  when: (hostname_from_etc | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -231,7 +251,7 @@
   register: lightdm_enabled_check
   changed_when: false
   failed_when: lightdm_enabled_check.rc != 0
-  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
+  when: (hostname_from_etc | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -243,7 +263,7 @@
   register: lightdm_active_check
   changed_when: false
   failed_when: false
-  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
+  when: (hostname_from_etc | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -252,12 +272,12 @@
 - name: Display LightDM verification results (ASTER only)
   ansible.builtin.debug:
     msg: |
-      LightDM Status on {{ ansible_hostname }}:
+      LightDM Status on {{ hostname_from_etc }}:
       ==================================
       Packages installed: {{ lightdm_install_result is success }}
       Service enabled: {{ lightdm_enabled_check.stdout | default('N/A') }}
       Service running: {{ lightdm_active_check.stdout | default('N/A') }} (should be 'inactive')
-  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
+  when: (hostname_from_etc | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
