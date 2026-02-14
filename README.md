@@ -12,7 +12,7 @@ Installs XFCE4 desktop environment and related packages for Arch Linux. Optional
 ## Requirements
 
 - `community.general` collection (for `pacman` module)
-- `ansible-role-hostname` must run before this role (provides `hostname` variable)
+- LightDM host check uses `ansible_hostname` (from gathered facts); no extra role required
 
 ```bash
 ansible-galaxy collection install community.general
@@ -42,15 +42,14 @@ ansible-galaxy collection install community.general
 
 ## Dependencies
 
-- **ansible-role-hostname**: Provides the `hostname` variable for conditional installation
+None. The role uses Ansible's `ansible_hostname` fact to decide whether to install LightDM (when it matches `xfce4_lightdm_hostname`, case-insensitive).
 
 ## Example Playbook
 
 ```yaml
 - hosts: workstations
   roles:
-    - ansible-role-hostname   # Sets hostname variable
-    - ansible-role-xfce4      # Installs XFCE4, LightDM on ASTER
+    - ansible-role-xfce4   # Installs XFCE4, LightDM on host matching xfce4_lightdm_hostname (default: ASTER)
 ```
 
 ## Tags

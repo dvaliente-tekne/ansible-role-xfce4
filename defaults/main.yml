@@ -43,8 +43,12 @@ xfce4_packages:
 # LightDM packages (installed only on specific hosts)
 xfce4_lightdm_packages:
   - lightdm
+  - light-locker
+  - lightdm-slick-greeter
   - lightdm-gtk-greeter
   - lightdm-gtk-greeter-settings
+  - lightdm-webkit-theme-litarvan
+  - lightdm-webkit2-greeter
 
 # Hostname that requires LightDM
 xfce4_lightdm_hostname: "ASTER"

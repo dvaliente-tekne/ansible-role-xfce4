@@ -53,7 +53,7 @@
     state: present
     extra_args: '--noconfirm --needed'
   register: lightdm_install_result
-  when: hostname == xfce4_lightdm_hostname
+  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -64,7 +64,7 @@
     name: "{{ xfce4_lightdm_service }}"
     enabled: true
     state: stopped
-  when: hostname == xfce4_lightdm_hostname
+  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -219,7 +219,7 @@
   register: lightdm_package_verify
   changed_when: false
   failed_when: lightdm_package_verify.rc != 0
-  when: hostname == xfce4_lightdm_hostname
+  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -231,7 +231,7 @@
   register: lightdm_enabled_check
   changed_when: false
   failed_when: lightdm_enabled_check.rc != 0
-  when: hostname == xfce4_lightdm_hostname
+  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -243,7 +243,7 @@
   register: lightdm_active_check
   changed_when: false
   failed_when: false
-  when: hostname == xfce4_lightdm_hostname
+  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
@@ -252,12 +252,12 @@
 - name: Display LightDM verification results (ASTER only)
   ansible.builtin.debug:
     msg: |
-      LightDM Status on {{ hostname }}:
+      LightDM Status on {{ ansible_hostname }}:
       ==================================
       Packages installed: {{ lightdm_install_result is success }}
       Service enabled: {{ lightdm_enabled_check.stdout | default('N/A') }}
       Service running: {{ lightdm_active_check.stdout | default('N/A') }} (should be 'inactive')
-  when: hostname == xfce4_lightdm_hostname
+  when: (ansible_hostname | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
   tags:
     - xfce4
     - lightdm
