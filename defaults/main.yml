@@ -50,4 +50,4 @@ xfce4_lightdm_packages:
 xfce4_lightdm_hostname: "ASTER"
 
 # LightDM service name
-xfce4_lightdm_service: lightdm, bluetooth
+xfce4_lightdm_service: lightdm
