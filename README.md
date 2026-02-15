@@ -1,13 +1,14 @@
 # XFCE4 Role
 
-Installs XFCE4 desktop environment and related packages for Arch Linux. Optionally installs and configures LightDM on specific hosts.
+Installs XFCE4 desktop environment and related packages for Arch Linux. Optionally installs and configures LightDM (including slick greeter) on a specific hostname.
 
 ## What It Does
 
-1. **Installs XFCE4 packages** on all hosts (desktop, themes, portals, Xorg)
-2. **Installs LightDM** on ASTER hostname only
-3. **Enables LightDM service** (without starting) on ASTER
-4. **Verifies installation** of all packages and service state
+1. **Reads hostname** from `/etc/hostname` and sets facts for the role.
+2. **Installs XFCE4** package groups and packages on all hosts (desktop, themes, portals, Xorg, bluetooth, first-boot apps).
+3. **On host matching `xfce4_lightdm_hostname` (default ASTER):** installs LightDM packages, enables LightDM service (stopped), and sets `greeter-session=lightdm-slick-greeter` in `/etc/lightdm/lightdm.conf` (replacing the commented example line).
+4. **User configuration** – creates per-user directories and copies portal/theme config (e.g. xdg-desktop-portal, Minimal-Grey2 theme, ACPI handler).
+5. **Verifies** package and service state.
 
 ## Requirements
 
@@ -38,7 +39,9 @@ ansible-galaxy collection install community.general
 
 ### LightDM Packages (ASTER only)
 
-- lightdm, lightdm-gtk-greeter, lightdm-gtk-greeter-settings
+- lightdm, light-locker, lightdm-slick-greeter, lightdm-gtk-greeter, lightdm-gtk-greeter-settings, lightdm-webkit-theme-litarvan, lightdm-webkit2-greeter
+
+The role also replaces `#greeter-session=example-gtk-gnome` with `greeter-session=lightdm-slick-greeter` in `/etc/lightdm/lightdm.conf`.
 
 ## Dependencies
 
@@ -58,7 +61,8 @@ None. The role reads the hostname from `/etc/hostname` and uses it to decide whe
 |-----|-------------|
 | `xfce4` | All XFCE4 tasks |
 | `packages` | Package installation only |
-| `lightdm` | LightDM specific tasks |
+| `lightdm` | LightDM packages, service, and lightdm.conf |
+| `config` | LightDM config file and user/portal config |
 | `service` | Service management |
 | `verify` | Verification tasks |
 
