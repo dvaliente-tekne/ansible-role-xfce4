@@ -79,6 +79,17 @@
     - lightdm
     - packages
 
+- name: Set LightDM greeter to slick greeter (ASTER only)
+  ansible.builtin.replace:
+    path: /etc/lightdm/lightdm.conf
+    regexp: '^#greeter-session=example-gtk-gnome'
+    replace: 'greeter-session=lightdm-slick-greeter'
+  when: (hostname_from_etc | default('') | upper) == (xfce4_lightdm_hostname | default('') | upper)
+  tags:
+    - xfce4
+    - lightdm
+    - config
+
 - name: Enable LightDM service without starting (ASTER only)
   ansible.builtin.systemd:
     name: "{{ xfce4_lightdm_service }}"
